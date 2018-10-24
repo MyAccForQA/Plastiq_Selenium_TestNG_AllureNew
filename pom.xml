@@ -1,0 +1,167 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.google</groupId>
+	<artifactId>Plastiq_Selenium_TestNG_AllureNew</artifactId>
+	<!-- <version>${build.version}</version> -->
+	<version>1.1</version>
+	<packaging>jar</packaging>
+
+	<name>Plastiq_Selenium_TestNG_AllureNew</name>
+	<url>http://maven.apache.org</url>
+
+
+	<!-- ############################### properties - START ############################################### -->
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<testNG.ver>6.14.3</testNG.ver>
+		<selenium.ver>3.14.0</selenium.ver>
+
+		<!-- #### allure #### -->
+		<!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-testng -->
+		<allure.version>2.6.0</allure.version>
+		<!-- Needed for allure-maven-plugin to specify report version -->
+		<!-- aspectj - https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+		<aspectj.version>1.8.10</aspectj.version>
+	</properties>
+	<!-- ############################### properties - END ################################################# -->
+
+
+	<!-- ############################### dependencies - START ############################################### -->
+	<dependencies>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testNG.ver}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium.ver}</version>
+		</dependency>
+
+		<!-- new version ALLURE -->
+		<!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-testng -->
+		<dependency>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-testng</artifactId>
+			<version>${allure.version}</version>
+		</dependency>
+
+	</dependencies>
+	<!-- ############################### dependencies - END ############################################### -->
+
+
+	<!-- ############################### build - START ############################################### -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<testFailureIgnore>true</testFailureIgnore>
+					<argLine>
+						-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+					</argLine>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjweaver</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- ############################### build - END ############################################### -->
+
+
+	<!-- ############################### reporting - START ############################################### -->
+	<reporting>
+		<excludeDefaults>true</excludeDefaults>
+		<plugins>
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+				<version>2.8</version>
+			</plugin>
+		</plugins>
+	</reporting>
+	<!-- ############################### reporting - END ############################################### -->
+
+
+	<!-- ############################### profiles - START ############################################### -->
+	<!-- ################################# TestNG - ONLY ################################################ -->
+	<profiles>
+		<profile> <!-- Using Suite XML Files - http://maven.apache.org/surefire/maven-surefire-plugin/examples/testng.html -->
+			<!-- default - run all test -->
+			<!-- run - mvn clean test -Ptest1 -->
+			<id>test1</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.19</version>
+						<configuration>
+							<suiteXmlFiles>
+								<suiteXmlFile>!testngxml!/testng_All_Test.xml</suiteXmlFile>
+							</suiteXmlFiles>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!-- if you know only name of file - run one test file from folder - ./!testngxml!/..... -->
+			<!-- run - mvn clean test -Ptest2 -Dtestngfile=testng_TestsTemp0_Title.xml -->
+			<id>test2</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.19</version>
+						<configuration>
+							<suiteXmlFiles>
+								<suiteXmlFile>!testngxml!/${testngfile}</suiteXmlFile>
+							</suiteXmlFiles>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!-- if you know path to file - run one test file with full path -->
+			<!-- run - mvn clean test -Ptest3 -Dtestngfile=!testngxml!/testng_TestsTemp0_Title.xml -->
+			<id>test3</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.19</version>
+						<configuration>
+							<suiteXmlFiles>
+								<suiteXmlFile>${testngfile}</suiteXmlFile>
+							</suiteXmlFiles>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<!-- ################################# TestNG - ONLY ################################################ -->
+	<!-- ############################### profiles - START ############################################### -->
+
+</project>
